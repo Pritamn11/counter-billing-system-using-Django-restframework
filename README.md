@@ -5,7 +5,7 @@
 Clone the repository 
 
 ```bash
-https://github.com/Pritamn11/counter-billing-system-using-Django-restframework.git
+git clone https://github.com/Pritamn11/counter-billing-system-using-Django-restframework.git
 ```
 
 #### STEPS 01 - Create a virtual environment after opening the repository

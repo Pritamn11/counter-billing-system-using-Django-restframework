@@ -97,11 +97,23 @@ class EmployeeLogin(APIView):
         password = request.data.get('password')
         employee = authenticate(username = username, password = password)
         if employee:
-            login(request , employee)
-            token, created = Token.objects.get_or_create(user=employee)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
+            refresh = RefreshToken.for_user(employee)
+            return Response({'status' : 200 ,  'refresh': str(refresh), 'access': str(refresh.access_token)})
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+
+
+
+
+
+#     login(request , employee)
+#     token, created = Token.objects.get_or_create(user=employee)
+#     return Response({'token': token.key}, status=status.HTTP_200_OK)
+# else:
+#     return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 # @api_view(['POST'])
