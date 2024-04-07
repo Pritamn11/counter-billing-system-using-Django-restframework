@@ -14,7 +14,11 @@ class CustomerAdmin(admin.ModelAdmin):
     list_display = ('id','name', 'email', 'phone_number', 'gender', 'age', 'address')
 
 class BillAdmin(admin.ModelAdmin):
-    list_display = ('customer', 'total_amount','employee')
+    list_display = ('customer','get_product_names', 'total_amount', 'created_by', 'generated_at')
+    def get_product_names(self, obj):
+        return ', '.join([product.name for product in obj.products.all()])
+
+    get_product_names.short_description = 'Products'
 
 
 admin.site.register(Employee, EmployeeAdmin)

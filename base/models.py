@@ -1,10 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone 
 # Create your models here.
 
 # https://docs.djangoproject.com/en/5.0/topics/auth/customizing/#django.contrib.auth.models.AbstractBaseUser
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+
+
 
 class EmployeeManager(BaseUserManager):
     def create_user(self, username, email, employee_id, department, position, password=None, **extra_fields):
@@ -81,8 +84,11 @@ class Customer(models.Model):
         return self.name
 
 
+
+
 class Bill(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='bills', default=1)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_by = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='created_bills', default=1)
+    generated_at = models.DateTimeField(default=timezone.now)

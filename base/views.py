@@ -12,7 +12,11 @@ from django.contrib.auth import authenticate, login
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import permissions
+from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
+
 
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
@@ -35,7 +39,7 @@ class CustomerRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
 
 class CustomerBill(APIView):
     def post(self, request):
-        customer_id = request.data.get('id')
+        customer_id = request.data.get('customer_id')
         product_id = request.data.get('product_id')
         employee_id = request.data.get('employee_id')
 
@@ -48,7 +52,7 @@ class CustomerBill(APIView):
         
         # Retrieve product
         try:
-            product = Product.objects.filter(id=product_id)
+            products = Product.objects.filter(id=product_id)
         except Product.DoesNotExist:
             return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
         
@@ -59,10 +63,10 @@ class CustomerBill(APIView):
             return Response({'error': 'Employee not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
-        total_amount = sum(product.price for product in product)
+        total_amount = sum(product.price for product in products)
 
-        bill = Bill.objects.create(customer=customer, total_amount=total_amount, employee_id=employee.id)
-        bill.products.add(*product)
+        bill = Bill.objects.create(customer=customer, total_amount=total_amount, created_by=employee)
+        bill.products.add(*products)
 
         serializer = BillSerializer(bill)
         return Response(serializer.data, status=201)
@@ -78,13 +82,15 @@ class RegisterUser(APIView):
             return Response({'status' : 403, 'errors' : serializer.errors, 'message' : 'Validation error. Please check your data.'}) 
         employee = serializer.save()
     
-        token_obj , _ = Token.objects.get_or_create(user=employee)
+        refresh = RefreshToken.for_user(employee)
         
-        return Response({'status' : 200 , 'payload' : serializer.data, 'token': str(token_obj), 'message' : 'your data is saved'})
+        return Response({'status' : 200 , 'payload' : serializer.data, 
+                        'refresh': str(refresh), 'access': str(refresh.access_token),  
+                        'message' : 'your data is saved'})
         
 
 class EmployeeLogin(APIView):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
 
     def post(self, request):
         username = request.data.get('username')
@@ -97,6 +103,7 @@ class EmployeeLogin(APIView):
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
+
 # @api_view(['POST'])
 # def login(request):
 #     user = get_object_or_404(Employee, username = request.data['username'])
@@ -106,4 +113,34 @@ class EmployeeLogin(APIView):
 #     serializer = EmployeeSerializer(instance=user)
 #     return Response({"token": token.key, "user": serializer.data})
 
-        
+# @api_view(['POST'])
+# def test_bill(request):
+#     customer_id = request.data.get('customer_id')
+#     product_id = request.data.get('product_id')
+#     employee_id = request.data.get('employee_id')
+    
+#     customer = Customer.objects.get(id=customer_id)
+#     employee = Employee.objects.get(id=employee_id)
+
+
+#     products = Product.objects.filter(id=product_id)
+    
+#     total_amount = sum(product.price for product in products)
+    
+#     bill = Bill.objects.create(customer=customer, total_amount=total_amount, created_by=employee)
+#     bill.products.add(*products)
+
+#     customer_data = CustomerSerializer(customer).data
+#     product_data = ProductSerializer(products, many=True).data
+#     employee_data = EmployeeSerializer(employee).data
+    
+
+#     data = {
+#         'id': bill.id,
+#         'customer_id': customer_id,
+#         'product_ids': product_id,
+#         'employee_id': employee_id,
+#         'total_amount': total_amount,
+#         'generated_at': bill.generated_at 
+#     }
+#     return Response(data)
