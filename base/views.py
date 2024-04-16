@@ -22,19 +22,19 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all().order_by('id')
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
 
 class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
 
 class CustomerRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
 
 class CustomerBill(APIView):
@@ -90,8 +90,6 @@ class RegisterUser(APIView):
         
 
 class EmployeeLogin(APIView):
-    authentication_classes = [JWTAuthentication]
-
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')

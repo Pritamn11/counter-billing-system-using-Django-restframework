@@ -1,4 +1,7 @@
-# How to run?
+# Billing system
+#### on-counter billing system for a small-scale shopping
+
+## How to run?
 
 ### STEPS: 
 
@@ -66,5 +69,54 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-### Usage Instructions
+# Django Restframework Billing system App Setup Guide for AWS EC2
 
+## Update the System
+
+```bash
+sudo apt-get update
+```
+
+### To get this repository, run the following command inside your git enabled terminal
+
+```bash
+git clone https://github.com/Pritamn11/counter-billing-system-using-Django-restframework.git
+```
+
+### You will need Django installed on your EC2 instance to run this app. You can install Django using pip. You can download Django from [here](https://www.djangoproject.com/download/).
+
+### Download Django using pip
+
+```bash
+sudo apt install python3-pip -y
+```
+
+```bash
+pip install django
+```
+
+### Once Django is installed, go to the cloned repo directory and run the following command to create all the migration files required to run this app.
+
+```bash
+python3 manage.py makemigrations
+```
+
+This will create all the migrations files (database migrations) required to run this App.
+
+### Now, to apply these migrations, run the following command
+
+```bash
+python3 manage.py migrate
+```
+
+### One last step to access the admin interface, create a superuser by running the following command in the terminal. Provide a username, password, and email for the admin user
+
+```bash
+python3 manage.py createsuperuser
+```
+
+### Start the server by running the following command.
+
+Once the server is hosted, navigate to your EC2 instance's public IP address followed by port 8000 (e.g., http://your_ec2_public_ip:8000/api/schema/swagger-ui) to access the Todo App.
+
+Cheers and Happy Coding :)
