@@ -83,7 +83,7 @@ sudo apt-get update
 git clone https://github.com/Pritamn11/counter-billing-system-using-Django-restframework.git
 ```
 
-### You will need Django installed on your EC2 instance to run this app. You can install Django using pip. You can download Django from [here](https://www.djangoproject.com/download/).
+### You will need Django installed on your EC2 instance to run this app. You can install Django using pip. Head over to [here](https://www.djangoproject.com/download/) for the download guide.
 
 ### Download Django using pip
 
@@ -94,6 +94,26 @@ sudo apt install python3-pip -y
 ```bash
 pip install django
 ```
+
+```bash
+pip install djangorestframework
+```
+
+```bash
+sudo apt install libpq-dev
+```
+```bash
+pip install psycopg2
+```
+
+```bash
+pip install drf-spectacular
+```
+
+```bash
+pip install djangorestframework-simplejwt
+```
+
 
 ### Once Django is installed, go to the cloned repo directory and run the following command to create all the migration files required to run this app.
 
@@ -116,6 +136,11 @@ python3 manage.py createsuperuser
 ```
 
 ### Start the server by running the following command.
+
+```bash
+python3 manage.py runserver 0.0.0.0:8000
+```
+
 
 Once the server is hosted, navigate to your EC2 instance's public IP address followed by port 8000 (e.g., http://your_ec2_public_ip:8000/api/schema/swagger-ui) to access the Todo App.
 
